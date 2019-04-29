@@ -1,4 +1,4 @@
-You can combine multiple shell script files to single standalone executable shell script.
+You can combine multiple shell script files to single executable shell script.
 
 ## sample1: making executable of ../helloworld
 ```
