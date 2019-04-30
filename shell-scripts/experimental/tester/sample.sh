@@ -32,4 +32,5 @@ test_wrong_definition () {
 
 prefix="$(dirname "$0")"
 
-"$prefix"/tester.sh "$0"
+# Please load tester.sh to execute testcases.
+. "$prefix"/tester.sh

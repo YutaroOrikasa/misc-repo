@@ -1,14 +1,9 @@
 #!/bin/sh
 
-# stop if tester is executed recursively
-if [ x"$1" = x"$_TESTER_NOW_TESTING" ];then
-    exit
-fi
+# usage: . ./tester.sh
 
-testee="$1"
+testee="$0"
 export _TESTER_NOW_TESTING="$testee"
-
-source "$testee"
 
 assert() {
     test "$@" || {
