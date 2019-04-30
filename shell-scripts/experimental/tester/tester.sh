@@ -29,7 +29,7 @@ assert='_TESTER_ASSERTION_LINENO=$LINENO assert'
 
 test_failed=0
 
-for test_func in $(grep '^test.*()' <"$testee" \
+for test_func in $(grep '^test[^ ]*()' <"$testee" \
                          | sed -e 's/()/ /g' \
                          | awk '{ print $1 }')
 do
