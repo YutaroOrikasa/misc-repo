@@ -21,20 +21,20 @@ override CXXFLAGS = -Wall -std=c++17 $(INCLUDE_FLAGS) $(_DEP_FLAGS)
 all: $(LIBRARY_FILES) $(EXECUTABLE_FILES)
 
 $(BUILD_DIR)/%.L:
-	$(MAKE) BUILD_DIR=$(BUILD_DIR) LIBRARY_TARGET=$@ sub
+	$(MAKE) BUILD_DIR=$(BUILD_DIR) TARGET=$(@:%.L=%.a) sub
 
 $(BUILD_DIR)/%.E:
-	$(MAKE) BUILD_DIR=$(BUILD_DIR) TARGET=$@ sub
+	$(MAKE) BUILD_DIR=$(BUILD_DIR) TARGET=$(@:%.E=%) sub
 
 
 # processed on recursive make execution
-LIBRARY_SOURCE_DIR := $(LIBRARY_TARGET:$(BUILD_DIR)/%.L=%)
-EXECUTABLE_SOURCE_DIR := $(TARGET:$(BUILD_DIR)/%.E=%)
 
-LIBRARY_NAME := $(LIBRARY_SOURCE_DIR)
+TARGET_NAME := $(TARGET:%.a=%)
+SOURCE_DIR := $(TARGET_NAME:$(BUILD_DIR)/%=%)
+
+LIBRARY_NAME := $(SOURCE_DIR)
 LIBRARY_FILE := $(LIBRARY_NAME:%=%.a)
-EXECUTABLE_FILE := $(EXECUTABLE_SOURCE_DIR)
-SOURCE_DIR := $(LIBRARY_SOURCE_DIR)$(EXECUTABLE_SOURCE_DIR)
+EXECUTABLE_FILE := $(SOURCE_DIR)
 
 # In shell function, escaping is needed sa same as shell script.
 SOURCE_FILES := $(shell test -n "$(SOURCE_DIR)" && find "$(SOURCE_DIR)" -name \*.c -or -name \*.cpp)
@@ -43,7 +43,7 @@ OBJECT_FILES := $(SOURCE_FILES:%=$(BUILD_DIR)/sub/%.o)
 DEPENDENCY_FILES := $(OBJECT_FILES:%.o=%.d)
 
 .PHONY: sub
-sub: $(LIBRARY_FILE:%=$(BUILD_DIR)/%) $(EXECUTABLE_FILE:%=$(BUILD_DIR)/%)
+sub: $(TARGET)
 
 $(BUILD_DIR)/$(LIBRARY_NAME).a: $(OBJECT_FILES)
 	mkdir -p $(@D)
