@@ -9,8 +9,8 @@ BUILD_DIR ?= build
 # string replacement
 # e.g aaa -> $(BUILD_DIR)/aaa.o
 # % maches 'aaa' in example.
-LIBRARY_FILES := $(LIBRARY_SOURCE_DIRS:%=$(BUILD_DIR)/%.L)
-EXECUTABLE_FILES := $(EXECUTABLE_SOURCE_DIRS:%=$(BUILD_DIR)/%.E)
+LIBRARY_DUMMY_TARGETS := $(LIBRARY_SOURCE_DIRS:%=$(BUILD_DIR)/%._L)
+EXECUTABLE_DUMMY_TARGETS := $(EXECUTABLE_SOURCE_DIRS:%=$(BUILD_DIR)/%._E)
 
 
 _DEP_FLAGS := -MMD -MP
@@ -18,13 +18,13 @@ INCLUDE_FLAGS := $(INCLUDE_PATHS:%=-I%)
 override CFLAGS += -Wall $(INCLUDE_FLAGS) $(_DEP_FLAGS)
 override CXXFLAGS = -Wall -std=c++17 $(INCLUDE_FLAGS) $(_DEP_FLAGS)
 
-all: $(LIBRARY_FILES) $(EXECUTABLE_FILES)
+all: $(LIBRARY_DUMMY_TARGETS) $(EXECUTABLE_DUMMY_TARGETS)
 
-$(BUILD_DIR)/%.L:
-	$(MAKE) BUILD_DIR=$(BUILD_DIR) TARGET=$(@:%.L=%.a) sub
+$(BUILD_DIR)/%._L:
+	$(MAKE) TARGET=$(@:%._L=%.a) sub
 
-$(BUILD_DIR)/%.E:
-	$(MAKE) BUILD_DIR=$(BUILD_DIR) TARGET=$(@:%.E=%) sub
+$(BUILD_DIR)/%._E:
+	$(MAKE) TARGET=$(@:%._E=%) sub
 
 
 # processed on recursive make execution
@@ -51,7 +51,7 @@ $(BUILD_DIR)/$(LIBRARY_NAME).a: $(OBJECT_FILES)
 
 $(BUILD_DIR)/$(EXECUTABLE_FILE): $(OBJECT_FILES)
 	mkdir -p $(@D)
-	$(CC) $(LDFLAGS) $(OBJECT_FILES) $(LIBRARY_FILES:%.L=%.a) -o $@
+	$(CC) $(LDFLAGS) $(OBJECT_FILES) $(LIBRARY_DUMMY_TARGETS:%._L=%.a) -o $@
 
 # C file
 $(BUILD_DIR)/sub/%.c.o: %.c
@@ -65,12 +65,9 @@ $(BUILD_DIR)/sub/%.cpp.o: %.cpp
 
 
 # PHONY targets
-.PHONY: clean print-source-files
+.PHONY: clean
 
 clean:
 	rm -rf build
-
-print-source-files:
-	@echo $(SOURCE_FILES)
 
 -include $(DEPENDENCY_FILES)
