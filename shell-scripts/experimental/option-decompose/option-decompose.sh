@@ -6,21 +6,46 @@
 # usage
 # eval set -- "$(./option-decompose.sh "$@")"
 
+append_eof_newline() {
+    cat
+    echo
+}
+
+remove_eof_newline() {
+    IFS= read -r line
+    printf '%s' "$line"
+    while IFS= read -r line;do
+        printf '\n%s' "$line"
+    done
+}
+
 escape() {
-    
-    printf "'"
-    
     # sed: "'" -> "\'"
     sed "s/'/'\\\\''/g"
+}
 
+single_quote() {
+    printf "'"
+    cat
     printf "'"
 }
 
-long_opt() {
-    if echo "$1" | grep '=' > /dev/null;then
-        printf '%s ' "$(echo "$1" | head -n 1 | sed 's/=.*//')"
-        printf '%s' "$1" | tr '\n' '\0' | sed 's/[^=]*=//' | escape | tr -d '\n' | tr '\0' '\n'
+# "--opt=aaa..." => "aaa..."
+discard_long_opt() {
+    IFS= read -r line
+    printf '%s\n' "$line" | sed 's/[^=]*=//'
+    cat
+}
 
+long_opt() {
+    if printf '%s' "$1" | grep '=' > /dev/null;then
+        printf '%s ' "$(echo "$1" | head -n 1 | sed 's/=.*//')"
+        printf '%s' "$1" \
+            | append_eof_newline \
+            | discard_long_opt \
+            | escape \
+            | remove_eof_newline \
+            | single_quote
     else
         printf '%s' "$1"
     fi
@@ -49,7 +74,7 @@ for arg in "$@";do
     case "$arg" in
         --*) long_opt "$arg";;
         -*) short_opts "$arg";;
-        *) printf '%s' "$arg" | tr '\n' '\0' | escape | tr -d '\n' | tr '\0' '\n';;
+        *) printf '%s' "$arg" | append_eof_newline | escape | remove_eof_newline | single_quote;;
     esac
 done
 echo

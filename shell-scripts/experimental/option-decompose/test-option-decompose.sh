@@ -36,6 +36,24 @@ test_decompose_long_option_eq_argument() {
 
 }
 
+test_decompose_long_option_eq_argument_containing_eq() {
+    eval set -- $("$prefix"/option-decompose.sh --long-opt=flag=on)
+
+    assert x"$1" = x"--long-opt"
+    assert x"$2" = x"flag=on"
+
+}
+
+test_decompose_long_option_eq_newline_argument_containing_eq() {
+    eval set -- "$("$prefix"/option-decompose.sh --long-opt='fl
+ag=on')"
+
+    assert x"$1" = x"--long-opt"
+    assert x"$2" = x"fl
+ag=on"
+
+}
+
 test_argument_includes_space() {
     eval set -- $("$prefix"/option-decompose.sh "hello world")
     assert x"$1" = x"hello world"
@@ -48,18 +66,12 @@ world")"
 world'"
 }
 
-test_argument_includes_newline_noeval() {
+test_argument_includes_newline() {
     eval set -- "$("$prefix"/option-decompose.sh "hello
 world" "_")"
     assert x"$1" = x"hello
 world"
-}
-
-test_argument_includes_newline() {
-    eval set -- "$("$prefix"/option-decompose.sh "hello
-world")"
-    assert x"$1" = x"hello
-world"
+    assert x"$2" = x"_"
 }
 
 test_setopt_includes_newline() {
