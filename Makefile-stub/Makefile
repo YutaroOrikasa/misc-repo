@@ -20,13 +20,14 @@ DEPENDENCY_FILES := $(OBJECT_FILES:%.o=%.d)
 _DEP_FLAGS := -MMD -MP
 INCLUDE_FLAGS := $(INCLUDE_PATHS:%=-I%)
 override CFLAGS += -Wall $(INCLUDE_FLAGS) $(_DEP_FLAGS)
-override CXXFLAGS = -Wall -std=c++17 $(INCLUDE_FLAGS) $(_DEP_FLAGS)
+override CXXFLAGS += -Wall -std=c++17 $(INCLUDE_FLAGS) $(_DEP_FLAGS)
 
 all: $(BUILD_DIR)/$(EXECUTABLE_FILE)
 
+# link
 $(BUILD_DIR)/$(EXECUTABLE_FILE): $(OBJECT_FILES)
 	mkdir -p $(BUILD_DIR)
-	$(CC) $(LDFLAGS) $(OBJECT_FILES) -o $@
+	$(CXX) $(LDFLAGS) $(OBJECT_FILES) -o $@
 
 # C file
 $(BUILD_DIR)/%.c.o: %.c
