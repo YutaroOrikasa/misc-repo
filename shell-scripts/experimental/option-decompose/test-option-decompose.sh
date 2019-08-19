@@ -44,6 +44,22 @@ test_decompose_long_option_eq_argument_containing_eq() {
 
 }
 
+test_decompose_long_option_eq_argument_containing_single_quote() {
+    eval set -- $("$prefix"/option-decompose.sh --long-opt="arg'n")
+
+    assert x"$1" = x"--long-opt"
+    assert x"$2" = x"arg'n"
+
+}
+
+test_decompose_long_option_eq_argument_containing_double_quote() {
+    eval set -- $("$prefix"/option-decompose.sh --long-opt=\")
+
+    assert x"$1" = x"--long-opt"
+    assert x"$2" = x\"
+
+}
+
 test_decompose_long_option_eq_newline_argument_containing_eq() {
     eval set -- "$("$prefix"/option-decompose.sh --long-opt='fl
 ag=on')"
