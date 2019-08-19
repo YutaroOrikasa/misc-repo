@@ -72,32 +72,3 @@ for arg in "$@";do
 done
 echo
 
-exit
-
-
-# unused codes
-
-
-# "--opt=aaa..." => "aaa..."
-discard_long_opt() {
-    IFS= read -r line
-    printf '%s\n' "$line" | sed 's/[^=]*=//'
-    cat
-}
-
-
-long_opt() {
-    if printf '%s' "$1" | grep '=' > /dev/null;then
-        printf '%s ' "$(echo "$1" | head -n 1 | sed 's/=.*//')"
-        printf '%s' "$1" \
-            | append_eof_newline \
-            | discard_long_opt \
-            | escape \
-            | remove_eof_newline \
-            | single_quote
-    else
-        printf '%s' "$1"
-    fi
-
-    
-}
