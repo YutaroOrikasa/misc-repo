@@ -33,7 +33,11 @@ single_quote() {
 long_opt() {
     if printf '%s' "$1" | grep '=' > /dev/null;then
         printf '%s ' "${1%%=*}"
-        echo "'${1#*=}'"
+        printf '%s' "${1#*=}" \
+            | append_eof_newline \
+            | escape \
+            | remove_eof_newline \
+            | single_quote
     else
         printf '%s' "$1"
     fi
