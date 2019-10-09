@@ -1,0 +1,4 @@
+#!/bin/sh
+
+./escape-backslash.sh \
+    | ./escape-newline.sh
