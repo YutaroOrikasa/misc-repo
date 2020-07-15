@@ -10,16 +10,20 @@
 timeout=$1
 shift
 
+_do_cmd() {
+    "$@"
+}
+
 kill_cmd() {
-    kill %'"$@"'
+    kill %_do_cmd
 }
 
 trap 'kill_cmd; exit 127' ALRM
 
 ( sleep $timeout; kill -ALRM $$) &
 
-"$@" &
-wait %'"$@"'
+_do_cmd "$@" &
+wait %_do_cmd
 status=$?
 
 kill %'( sleep $timeout'
