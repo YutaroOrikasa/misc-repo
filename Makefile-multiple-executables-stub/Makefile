@@ -9,7 +9,7 @@ BUILD_DIR ?= build
 # string replacement
 # e.g aaa -> $(BUILD_DIR)/aaa.o
 # % maches 'aaa' in example.
-LIBRARY_DUMMY_TARGETS := $(LIBRARY_SOURCE_DIRS:%=$(BUILD_DIR)/%._L)
+LIBRARY_DUMMY_TARGETS := $(LIBRARY_SOURCE_DIRS:%=$(BUILD_DIR)/%.a)
 EXECUTABLE_DUMMY_TARGETS := $(EXECUTABLE_SOURCE_DIRS:%=$(BUILD_DIR)/%)
 
 
@@ -48,7 +48,7 @@ $(BUILD_DIR)/$(LIBRARY_NAME).a: $(OBJECT_FILES)
 
 $(BUILD_DIR)/$(EXECUTABLE_FILE): $(OBJECT_FILES)
 	mkdir -p $(@D)
-	$(CXX) $(LDFLAGS) $(OBJECT_FILES) $(LIBRARY_DUMMY_TARGETS:%._L=%.a) -o $@
+	$(CXX) $(LDFLAGS) $(OBJECT_FILES) $(LIBRARY_DUMMY_TARGETS) -o $@
 
 # C file
 $(BUILD_DIR)/sub/%.c.o: %.c
@@ -66,8 +66,8 @@ $(BUILD_DIR)/sub/%.cpp.o: %.cpp
 # otherwise some/file.cpp.o matches $(BUILD_DIR)/%: rule.
 # The order of rule definition is important.
 
-$(BUILD_DIR)/%._L:
-	$(MAKE) TARGET=$(@:%._L=%.a) sub
+$(BUILD_DIR)/%.a:
+	$(MAKE) TARGET=$(@) sub
 
 # This dummy rule is needed because
 # -include $(DEPENDENCY_FILES) directive adds DEPENDENCY_FILES to targets,
