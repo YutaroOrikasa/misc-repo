@@ -19,7 +19,10 @@ override CFLAGS += -Wall $(INCLUDE_FLAGS) $(_DEP_FLAGS)
 override CXXFLAGS += -Wall -std=c++17 $(INCLUDE_FLAGS) $(_DEP_FLAGS)
 
 all: $(LIBRARY_DUMMY_TARGETS) $(EXECUTABLE_DUMMY_TARGETS)
-
+# Go to
+# $(BUILD_DIR)/%.a:
+# $(BUILD_DIR)/%:
+# rules.
 
 ##### begin sub make #####
 # processed on recursive make execution
