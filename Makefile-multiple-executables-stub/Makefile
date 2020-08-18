@@ -10,7 +10,7 @@ BUILD_DIR ?= build
 # e.g aaa -> $(BUILD_DIR)/aaa.o
 # % maches 'aaa' in example.
 LIBRARY_DUMMY_TARGETS := $(LIBRARY_SOURCE_DIRS:%=$(BUILD_DIR)/%._L)
-EXECUTABLE_DUMMY_TARGETS := $(EXECUTABLE_SOURCE_DIRS:%=$(BUILD_DIR)/%._E)
+EXECUTABLE_DUMMY_TARGETS := $(EXECUTABLE_SOURCE_DIRS:%=$(BUILD_DIR)/%)
 
 
 _DEP_FLAGS := -MMD -MP
@@ -20,13 +20,8 @@ override CXXFLAGS += -Wall -std=c++17 $(INCLUDE_FLAGS) $(_DEP_FLAGS)
 
 all: $(LIBRARY_DUMMY_TARGETS) $(EXECUTABLE_DUMMY_TARGETS)
 
-$(BUILD_DIR)/%._L:
-	$(MAKE) TARGET=$(@:%._L=%.a) sub
 
-$(BUILD_DIR)/%._E:
-	$(MAKE) TARGET=$(@:%._E=%) sub
-
-
+##### begin sub make #####
 # processed on recursive make execution
 # TARGET is empty in top make.
 # TARGET is passed on launching sub make via command line argument.
@@ -64,6 +59,24 @@ $(BUILD_DIR)/sub/%.c.o: %.c
 $(BUILD_DIR)/sub/%.cpp.o: %.cpp
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $< -o $@ -c
+
+##### end sub make #####
+
+# Top level rules must be at after sub make rules
+# otherwise some/file.cpp.o matches $(BUILD_DIR)/%: rule.
+# The order of rule definition is important.
+
+$(BUILD_DIR)/%._L:
+	$(MAKE) TARGET=$(@:%._L=%.a) sub
+
+# This dummy rule is needed because
+# -include $(DEPENDENCY_FILES) directive adds DEPENDENCY_FILES to targets,
+# This dummy rule prevents that DEPENDENCY_FILES matches $(BUILD_DIR)/% target.
+$(BUILD_DIR)/%.d:
+	true
+
+$(BUILD_DIR)/%:
+	$(MAKE) TARGET=$(@) sub
 
 
 # PHONY targets
