@@ -78,7 +78,7 @@ $(BUILD_DIR)/%.a:
 $(BUILD_DIR)/%.d:
 	true
 
-$(BUILD_DIR)/%:
+$(BUILD_DIR)/%: $(LIBRARY_TARGETS)
 	$(MAKE) TARGET=$(@) sub
 
 
