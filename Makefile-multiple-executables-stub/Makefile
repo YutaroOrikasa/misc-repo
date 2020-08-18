@@ -28,7 +28,8 @@ $(BUILD_DIR)/%._E:
 
 
 # processed on recursive make execution
-
+# TARGET is empty in top make.
+# TARGET is passed on launching sub make via command line argument.
 TARGET_NAME := $(TARGET:%.a=%)
 SOURCE_DIR := $(TARGET_NAME:$(BUILD_DIR)/%=%)
 
@@ -37,7 +38,8 @@ LIBRARY_FILE := $(LIBRARY_NAME:%=%.a)
 EXECUTABLE_FILE := $(SOURCE_DIR)
 
 # In shell function, escaping is needed sa same as shell script.
-SOURCE_FILES := $(shell test -n "$(SOURCE_DIR)" && find "$(SOURCE_DIR)" -name \*.c -or -name \*.cpp)
+# find command will be done in sub make (== TARGET is not empty).
+SOURCE_FILES := $(shell test -n "$(TARGET)" && find "$(SOURCE_DIR)" -name \*.c -or -name \*.cpp)
 
 OBJECT_FILES := $(SOURCE_FILES:%=$(BUILD_DIR)/sub/%.o)
 DEPENDENCY_FILES := $(OBJECT_FILES:%.o=%.d)
