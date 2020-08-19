@@ -12,7 +12,11 @@ EXECUTABLE_FILE := $(SOURCE_DIR)
 all: $(TARGET)
 
 # In shell function, escaping is needed sa same as shell script.
-SOURCE_FILES := $(shell find "$(SOURCE_DIR)" -name \*.c -or -name \*.cpp)
+SOURCE_FILES := $(shell if [ "$(SINGLE_SOURCE)" = 1 ];then \
+	echo $(SOURCE_DIR).*; \
+else \
+	find "$(SOURCE_DIR)" -name \*.c -or -name \*.cpp; \
+fi)
 
 OBJECT_FILES := $(SOURCE_FILES:%=$(BUILD_DIR)/_build/%.o)
 
