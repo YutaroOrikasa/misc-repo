@@ -24,11 +24,13 @@ export CXXFLAGS
 all: $(LIBRARY_TARGETS) $(EXECUTABLE_TARGETS)
 
 
-$(BUILD_DIR)/%.a:
+$(BUILD_DIR)/%.a: FORCE
 	$(MAKE) -f Makefile.d/submake.mk TARGET=$(@) BUILD_DIR=$(BUILD_DIR)
 
-$(BUILD_DIR)/%:
+$(BUILD_DIR)/%: FORCE
 	$(MAKE) -f Makefile.d/submake.mk TARGET=$(@) LIBRARY_TARGETS="$(LIBRARY_TARGETS)" BUILD_DIR=$(BUILD_DIR)
+
+FORCE: ;
 
 # PHONY targets
 .PHONY: clean list-targets test
