@@ -9,8 +9,8 @@ BUILD_DIR ?= build
 # string replacement
 # e.g aaa -> $(BUILD_DIR)/aaa.o
 # % maches 'aaa' in example.
-LIBRARY_DUMMY_TARGETS := $(LIBRARY_SOURCE_DIRS:%=$(BUILD_DIR)/%._L)
-EXECUTABLE_DUMMY_TARGETS := $(EXECUTABLE_SOURCE_DIRS:%=$(BUILD_DIR)/%._E)
+LIBRARY_TARGETS := $(LIBRARY_SOURCE_DIRS:%=$(BUILD_DIR)/%.a)
+EXECUTABLE_TARGETS := $(EXECUTABLE_SOURCE_DIRS:%=$(BUILD_DIR)/%)
 
 
 _DEP_FLAGS := -MMD -MP
@@ -18,15 +18,13 @@ INCLUDE_FLAGS := $(INCLUDE_PATHS:%=-I%)
 override CFLAGS += -Wall $(INCLUDE_FLAGS) $(_DEP_FLAGS)
 override CXXFLAGS += -Wall -std=c++17 $(INCLUDE_FLAGS) $(_DEP_FLAGS)
 
-all: $(LIBRARY_DUMMY_TARGETS) $(EXECUTABLE_DUMMY_TARGETS)
+all: $(LIBRARY_TARGETS) $(EXECUTABLE_TARGETS)
+# Go to
+# $(BUILD_DIR)/%.a:
+# $(BUILD_DIR)/%:
+# rules.
 
-$(BUILD_DIR)/%._L:
-	$(MAKE) TARGET=$(@:%._L=%.a) sub
-
-$(BUILD_DIR)/%._E:
-	$(MAKE) TARGET=$(@:%._E=%) sub
-
-
+##### begin sub make #####
 # processed on recursive make execution
 # TARGET is empty in top make.
 # TARGET is passed on launching sub make via command line argument.
@@ -53,7 +51,7 @@ $(BUILD_DIR)/$(LIBRARY_NAME).a: $(OBJECT_FILES)
 
 $(BUILD_DIR)/$(EXECUTABLE_FILE): $(OBJECT_FILES)
 	mkdir -p $(@D)
-	$(CXX) $(LDFLAGS) $(OBJECT_FILES) $(LIBRARY_DUMMY_TARGETS:%._L=%.a) -o $@
+	$(CXX) $(LDFLAGS) $(OBJECT_FILES) $(LIBRARY_TARGETS) -o $@
 
 # C file
 $(BUILD_DIR)/sub/%.c.o: %.c
@@ -65,11 +63,40 @@ $(BUILD_DIR)/sub/%.cpp.o: %.cpp
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $< -o $@ -c
 
+##### end sub make #####
+
+# Top level rules must be at after sub make rules
+# otherwise some/file.cpp.o matches $(BUILD_DIR)/%: rule.
+# The order of rule definition is important.
+
+$(BUILD_DIR)/%.a:
+	$(MAKE) TARGET=$(@) sub
+
+# This dummy rule is needed because
+# -include $(DEPENDENCY_FILES) directive adds DEPENDENCY_FILES to targets,
+# This dummy rule prevents that DEPENDENCY_FILES matches $(BUILD_DIR)/% target.
+$(BUILD_DIR)/%.d:
+	true
+
+$(BUILD_DIR)/%: $(LIBRARY_TARGETS)
+	$(MAKE) TARGET=$(@) sub
+
 
 # PHONY targets
-.PHONY: clean
+.PHONY: clean test-make
 
 clean:
 	rm -rf build
+
+test-make:
+	$(MAKE) clean
+	$(MAKE) all
+	$(BUILD_DIR)/test/src/test1
+	cp -p $(BUILD_DIR)/test/src/test1 $(BUILD_DIR)/test/src/test1.old
+	touch test/src/testlib/testlib.h
+	$(MAKE) all
+	$(BUILD_DIR)/test/src/test1
+	test -n "$(find $(BUILD_DIR) -name $(BUILD_DIR)/test/src/test1 -newer $(BUILD_DIR)/test/src/test1.old)"
+
 
 -include $(DEPENDENCY_FILES)
