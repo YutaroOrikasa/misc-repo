@@ -50,7 +50,8 @@ test-make:
 	$(MAKE) all
 	$(BUILD_DIR)/test/src/test1
 	cp -p $(BUILD_DIR)/test/src/test1 $(BUILD_DIR)/test/src/test1.old
+	sleep 1
 	touch test/src/libtesta/include/libtesta.h
 	$(MAKE) all
 	$(BUILD_DIR)/test/src/test1
-	test -n "$(find $(BUILD_DIR) -name $(BUILD_DIR)/test/src/test1 -newer $(BUILD_DIR)/test/src/test1.old)"
+	test -n "$$(find $(BUILD_DIR) -path $(BUILD_DIR)/test/src/test1 -newer $(BUILD_DIR)/test/src/test1.old)"
