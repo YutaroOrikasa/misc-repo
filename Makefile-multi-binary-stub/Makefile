@@ -25,10 +25,10 @@ all: $(LIBRARY_TARGETS) $(EXECUTABLE_TARGETS)
 
 
 $(BUILD_DIR)/%.a:
-	$(MAKE) -f Makefile.d/library.mk TARGET=$(@) BUILD_DIR=$(BUILD_DIR)
+	$(MAKE) -f Makefile.d/submake.mk TARGET=$(@) BUILD_DIR=$(BUILD_DIR)
 
 $(BUILD_DIR)/%:
-	$(MAKE) -f Makefile.d/executable.mk TARGET=$(@) LIBRARY_TARGETS="$(LIBRARY_TARGETS)" BUILD_DIR=$(BUILD_DIR)
+	$(MAKE) -f Makefile.d/submake.mk TARGET=$(@) LIBRARY_TARGETS="$(LIBRARY_TARGETS)" BUILD_DIR=$(BUILD_DIR)
 
 # PHONY targets
 .PHONY: clean list-targets test
