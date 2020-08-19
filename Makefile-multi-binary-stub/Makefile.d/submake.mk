@@ -13,7 +13,7 @@ all: $(TARGET)
 
 # In shell function, escaping is needed sa same as shell script.
 SOURCE_FILES := $(shell if [ "$(SINGLE_SOURCE)" = 1 ];then \
-	echo $(SOURCE_DIR).*; \
+	find . -path ./"$(SOURCE_DIR)".c -or -path ./"$(SOURCE_DIR)".cpp; \
 else \
 	find "$(SOURCE_DIR)" -name \*.c -or -name \*.cpp; \
 fi)
