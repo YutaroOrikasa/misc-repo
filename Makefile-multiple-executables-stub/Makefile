@@ -83,9 +83,20 @@ $(BUILD_DIR)/%: $(LIBRARY_TARGETS)
 
 
 # PHONY targets
-.PHONY: clean
+.PHONY: clean test-make
 
 clean:
 	rm -rf build
+
+test-make:
+	$(MAKE) clean
+	$(MAKE) all
+	$(BUILD_DIR)/test/src/test1
+	cp -p $(BUILD_DIR)/test/src/test1 $(BUILD_DIR)/test/src/test1.old
+	touch test/src/testlib/testlib.h
+	$(MAKE) all
+	$(BUILD_DIR)/test/src/test1
+	test -n "$(find $(BUILD_DIR) -name $(BUILD_DIR)/test/src/test1 -newer $(BUILD_DIR)/test/src/test1.old)"
+
 
 -include $(DEPENDENCY_FILES)
