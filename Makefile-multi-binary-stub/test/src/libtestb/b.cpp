@@ -1,0 +1,3 @@
+namespace testb {
+int b;
+}
