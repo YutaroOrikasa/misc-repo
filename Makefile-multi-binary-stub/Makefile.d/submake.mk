@@ -14,15 +14,15 @@ all: $(TARGET)
 # In shell function, escaping is needed sa same as shell script.
 SOURCE_FILES := $(shell find "$(SOURCE_DIR)" -name \*.c -or -name \*.cpp)
 
-OBJECT_FILES := $(SOURCE_FILES:%=$(BUILD_DIR)/sub/%.o)
+OBJECT_FILES := $(SOURCE_FILES:%=$(BUILD_DIR)/_build/%.o)
 
 # C file
-$(BUILD_DIR)/sub/%.c.o: %.c
+$(BUILD_DIR)/_build/%.c.o: %.c
 	mkdir -p $(@D)
 	$(CC) $(CFLAGS) $< -o $@ -c
 
 # C++ file
-$(BUILD_DIR)/sub/%.cpp.o: %.cpp
+$(BUILD_DIR)/_build/%.cpp.o: %.cpp
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $< -o $@ -c
 

@@ -39,7 +39,7 @@ EXECUTABLE_FILE := $(SOURCE_DIR)
 # find command will be done in sub make (== TARGET is not empty).
 SOURCE_FILES := $(shell test -n "$(TARGET)" && find "$(SOURCE_DIR)" -name \*.c -or -name \*.cpp)
 
-OBJECT_FILES := $(SOURCE_FILES:%=$(BUILD_DIR)/sub/%.o)
+OBJECT_FILES := $(SOURCE_FILES:%=$(BUILD_DIR)/_build/%.o)
 DEPENDENCY_FILES := $(OBJECT_FILES:%.o=%.d)
 
 .PHONY: sub
@@ -54,12 +54,12 @@ $(BUILD_DIR)/$(EXECUTABLE_FILE): $(OBJECT_FILES)
 	$(CXX) $(LDFLAGS) $(OBJECT_FILES) $(LIBRARY_TARGETS) -o $@
 
 # C file
-$(BUILD_DIR)/sub/%.c.o: %.c
+$(BUILD_DIR)/_build/%.c.o: %.c
 	mkdir -p $(@D)
 	$(CC) $(CFLAGS) $< -o $@ -c
 
 # C++ file
-$(BUILD_DIR)/sub/%.cpp.o: %.cpp
+$(BUILD_DIR)/_build/%.cpp.o: %.cpp
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $< -o $@ -c
 
