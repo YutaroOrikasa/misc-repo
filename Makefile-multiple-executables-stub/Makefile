@@ -75,12 +75,13 @@ $(BUILD_DIR)/%.a:
 # This dummy rule is needed because
 # -include $(DEPENDENCY_FILES) directive adds DEPENDENCY_FILES to targets,
 # This dummy rule prevents that DEPENDENCY_FILES matches $(BUILD_DIR)/% target.
-$(BUILD_DIR)/%.d:
+$(BUILD_DIR)/%.d: FORCE
 	true
 
-$(BUILD_DIR)/%: $(LIBRARY_TARGETS)
+$(BUILD_DIR)/%: $(LIBRARY_TARGETS) FORCE
 	$(MAKE) TARGET=$(@) sub
 
+FORCE: ;
 
 # PHONY targets
 .PHONY: clean test-make
