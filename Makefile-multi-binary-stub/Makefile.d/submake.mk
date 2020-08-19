@@ -1,3 +1,4 @@
+# license: CC0
 
 # processed on sub make execution
 
