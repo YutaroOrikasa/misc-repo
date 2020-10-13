@@ -1,0 +1,35 @@
+#!/bin/sh
+
+set -u
+
+list_child_pids() {
+    ps -eo ppid,pid,comm,args \
+        | awk -v ppid=$1 '$1 == ppid { print $2 }'
+}
+
+print_kill_pid_proc() {
+    ps -eo pid,args | awk -v pid=$1 '$1 == pid { print "kill: "$0 }'
+}
+
+kill_recursive() {
+    (
+        echo kill -STOP $1
+        kill -STOP $1
+        for pid in $(list_child_pids $1) ;do
+            if [ $pid = $$ ];then
+                continue
+            fi
+            echo " $1 >>" >&2
+            kill_recursive $pid
+            echo " $1 <<" >&2
+        done
+        # echo kill $1
+        print_kill_pid_proc $1 >&2
+        kill $1
+        echo kill -CONT $1
+        kill -CONT $1
+        kill $1
+    )
+}
+
+kill_recursive $1
