@@ -59,7 +59,8 @@ clean:
 	rm -rf build
 
 list-targets:
-	@printf '%s\n' $(LIBRARY_TARGETS) $(EXECUTABLE_TARGETS)
+	@printf '%s\n' $(LIBRARY_TARGETS) $(EXECUTABLE_TARGETS) \
+		$(SINGLE_SOURCE_LIBRARY_TARGETS) $(SINGLE_SOURCE_EXECUTABLE_TARGETS)
 
 test:
 	./build/test/src/test1
