@@ -40,6 +40,8 @@ $(BUILD_DIR)/%.a: FORCE
 $(BUILD_DIR)/%: $(ALL_LIBRARY_TARGETS) FORCE
 	$(MAKE) -f Makefile.d/submake.mk TARGET=$(@) LIBRARY_TARGETS="$(ALL_LIBRARY_TARGETS)" BUILD_DIR=$(BUILD_DIR)
 
+# We must always do submake because main makefile can't detect depending file updated,
+# so we put FORCE dummy target.
 FORCE: ;
 
 # PHONY targets
