@@ -8,7 +8,7 @@ INCLUDE_PATHS ?= test/include
 EXECUTABLE_FILE ?= main
 BUILD_DIR ?= build
 
-# In shell function, escaping is needed sa same as shell script.
+# In shell function, escaping is needed as same as shell script.
 SOURCE_FILES := $(shell find $(SOURCE_DIRS) -name \*.c -or -name \*.cpp)
 
 # string replacement

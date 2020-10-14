@@ -35,7 +35,7 @@ LIBRARY_NAME := $(SOURCE_DIR)
 LIBRARY_FILE := $(LIBRARY_NAME:%=%.a)
 EXECUTABLE_FILE := $(SOURCE_DIR)
 
-# In shell function, escaping is needed sa same as shell script.
+# In shell function, escaping is needed as same as shell script.
 # find command will be done in sub make (== TARGET is not empty).
 SOURCE_FILES := $(shell test -n "$(TARGET)" && find "$(SOURCE_DIR)" -name \*.c -or -name \*.cpp)
 
