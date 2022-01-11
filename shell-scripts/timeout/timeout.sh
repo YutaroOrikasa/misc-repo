@@ -7,26 +7,28 @@
 #   exit status of `cmd` if not timeouted
 #   127 if timeouted
 
+set -m # enable job control
+
+# suppress job report
+exec 3>&2
+exec 2>/dev/null
+
 timeout=$1
 shift
 
-do_cmd() {
-    "$@"
+observer() {
+    sleep "$timeout" # Why is this sleep killed?
+    kill -ALRM $$
 }
 
-kill_cmd() {
-    kill %do_cmd
-}
+trap 'kill %exec; exit 127' ALRM
 
-trap 'kill_cmd; exit 127' ALRM
-
-( sleep $timeout; kill -ALRM $$) &
-
-do_cmd "$@" &
-wait %do_cmd
+observer &
+exec "$@" 2>&3 &
+wait %exec
 status=$?
 
-kill %'( sleep $timeout'
+kill %observer
 
-exit $status
+exit "$status"
 
