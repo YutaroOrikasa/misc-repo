@@ -10,3 +10,7 @@ No proprietary codes are contained.
 ## git policy
 - monolithic repository
 - single branch
+
+## Development policy
+### Leave a report of failed try or branch
+Don't forget failures. Don't repeat failure.
