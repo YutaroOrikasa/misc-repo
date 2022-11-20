@@ -1,10 +1,11 @@
 
-SOURCE_DIR ?= .
+SOURCE_DIR ?= projects/libc
 
 BUILD_DIR ?= build
 
-$(BUILD_DIR)/$(SOURCE_DIR)/libc.so: $(BUILD_DIR)/$(SOURCE_DIR)/libc.a
-	$(CXX) $(LDFLAGS) $< -shared -o $@
+all: $(BUILD_DIR)/$(SOURCE_DIR)/libc.so
 
-LIBRARY_NAME := $(SOURCE_DIR)/libc
+$(BUILD_DIR)/$(SOURCE_DIR)/libc.so:
+	$(CXX) $(LDFLAGS) $(OBJECT_FILES) -shared -o $@
+
 include $(DEFAULT_MAKERULE_FILE)

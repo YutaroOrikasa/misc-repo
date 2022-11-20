@@ -5,7 +5,6 @@
 # % maches 'aaa' in example.
 LIBRARY_TARGETS := $(foreach dir, $(LIBRARY_SOURCE_DIRS), $(BUILD_DIR)/$(dir)/$(notdir $(dir)).a)
 EXECUTABLE_TARGETS := $(foreach dir, $(EXECUTABLE_SOURCE_DIRS), $(BUILD_DIR)/$(dir)/$(notdir $(dir)))
-CUSTOM_MAKE_TARGETS := $(foreach dir, $(CUSTOM_MAKE_SOURCE_DIRS), $(BUILD_DIR)/$(dir)/.PHONY)
 
 ALL_LIBRARY_TARGETS := $(LIBRARY_TARGETS)
 
@@ -28,14 +27,12 @@ $(BUILD_DIR)/%.a: FORCE
 	$(MAKE) -f Makefile.d/submake.mk TARGET=$(@) BUILD_DIR=$(BUILD_DIR) all
 
 
-# This maching doesn't occur on OSX make (maybe bug)
-$(BUILD_DIR)/%/.PHONY.DEPENDENCY: ;
 
-$(BUILD_DIR)/%/.PHONY: FORCE $(BUILD_DIR)/%/.PHONY.DEPENDENCY
+$(BUILD_DIR)/%/___: FORCE $(BUILD_DIR)/%/._____.DEPENDENCY
 	$(MAKE) -f $(@:$(BUILD_DIR)/%/.PHONY=%/Makefile) DEFAULT_MAKERULE_FILE=Makefile.d/submake_for_custom.mk SOURCE_DIR=$(@:$(BUILD_DIR)/%/.PHONY=%) TARGET=$(@) BUILD_DIR=$(BUILD_DIR)
 
-$(BUILD_DIR)/%: $(ALL_LIBRARY_TARGETS) FORCE
-	$(MAKE) -f Makefile.d/submake.mk LIBRARY_TARGETS="$(ALL_LIBRARY_TARGETS)" TARGET=$(@) BUILD_DIR=$(BUILD_DIR) all
+$(BUILD_DIR)/%: $(ALL_LIBRARY_FILES) FORCE
+	$(MAKE) -f Makefile.d/submake.mk LIBRARY_FILES="$(ALL_LIBRARY_TARGETS)" TARGET=$(@) BUILD_DIR=$(BUILD_DIR) all
 
 # We must always do submake because main makefile can't detect depending file updated,
 # so we put FORCE dummy target.

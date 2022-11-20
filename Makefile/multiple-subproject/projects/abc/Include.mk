@@ -1,5 +1,8 @@
-PROJECTS_ABC_DEPENDENCY := $(BUILD_DIR)/projects/liba/liba.a \
-							$(BUILD_DIR)/projects/libb/libb.a \
-							$(BUILD_DIR)/projects/libc/libc.so
+include projects/abc/Dependency.mk
 
-$(BUILD_DIR)/projects/abc/.PHONY.DEPENDENCY: $(PROJECTS_ABC_DEPENDENCY) ;
+$(BUILD_DIR)/projects/abc/abc: $(PROJECTS_ABC_DEPENDENCY)
+	$(MAKE) -f projects/abc/Makefile \
+		DEFAULT_MAKERULE_FILE=Makefile.d/submake_for_custom.mk \
+		SOURCE_DIR=projects/abc \
+		TARGET=$(@)
+		BUILD_DIR=$(BUILD_DIR)

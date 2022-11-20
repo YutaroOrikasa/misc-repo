@@ -1,13 +1,13 @@
 
-SOURCE_DIR ?= .
+SOURCE_DIR ?= projects/abc
 
 BUILD_DIR ?= build
 
-include projects/abc/Include.mk
+include projects/abc/Dependency.mk
 
 EXECUTABLE_FILE := $(SOURCE_DIR)/abc
-OBJECT_FILES := $(PROJECTS_ABC_DEPENDENCY)
-all: $(EXECUTABLE_FILE) ;
+LIBRARY_FILES := $(PROJECTS_ABC_DEPENDENCY)
+all: $(BUILD_DIR)/$(EXECUTABLE_FILE) ;
 
 
 include $(DEFAULT_MAKERULE_FILE)
