@@ -20,18 +20,24 @@ override CXXFLAGS += -Wall -std=c++17 $(INCLUDE_FLAGS) $(_DEP_FLAGS)
 export CFLAGS
 export CXXFLAGS
 
+include $(CUSTOM_MAKE_SOURCE_DIRS:%=%/Include.mk)
 
-all: $(LIBRARY_TARGETS) $(EXECUTABLE_TARGETS) $(CUSTOM_MAKE_TARGETS)
+
+all: $(LIBRARY_TARGETS) $(EXECUTABLE_TARGETS) $(CUSTOM_MAKE_TARGETS) ;
 
 
 $(BUILD_DIR)/%.a: FORCE
-	$(MAKE) -f Makefile.d/submake.mk TARGET=$(@) BUILD_DIR=$(BUILD_DIR)
+	$(MAKE) -f Makefile.d/submake.mk TARGET=$(@) BUILD_DIR=$(BUILD_DIR) all
 
-$(BUILD_DIR)/%/.PHONY: FORCE
+
+# This maching doesn't occur on OSX make (maybe bug)
+$(BUILD_DIR)/%/.PHONY.DEPENDENCY: ;
+
+$(BUILD_DIR)/%/.PHONY: FORCE $(BUILD_DIR)/%/.PHONY.DEPENDENCY
 	$(MAKE) -f $(@:$(BUILD_DIR)/%/.PHONY=%/Makefile) DEFAULT_MAKERULE_FILE=Makefile.d/submake_for_custom.mk SOURCE_DIR=$(@:$(BUILD_DIR)/%/.PHONY=%) TARGET=$(@) BUILD_DIR=$(BUILD_DIR)
 
 $(BUILD_DIR)/%: $(ALL_LIBRARY_TARGETS) FORCE
-	$(MAKE) -f Makefile.d/submake.mk TARGET=$(@) LIBRARY_TARGETS="$(ALL_LIBRARY_TARGETS)" BUILD_DIR=$(BUILD_DIR)
+	$(MAKE) -f Makefile.d/submake.mk LIBRARY_TARGETS="$(ALL_LIBRARY_TARGETS)" TARGET=$(@) BUILD_DIR=$(BUILD_DIR) all
 
 # We must always do submake because main makefile can't detect depending file updated,
 # so we put FORCE dummy target.
