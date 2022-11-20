@@ -1,8 +1,7 @@
 #include <iostream>
 namespace libb
 {
-    int init = []() {
-        std::cout << "libb init" << std::endl;
-        return 0;
-    }();
+    void greet() {
+        std::cout << "libb" << std::endl;
+    }
 } // namespace libb

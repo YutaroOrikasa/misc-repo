@@ -1,8 +1,7 @@
 #include <iostream>
 namespace libc
 {
-    int init = []() {
-        std::cout << "libc init" << std::endl;
-        return 0;
-    }();
+    void greet() {
+        std::cout << "libc" << std::endl;
+    }
 } // namespace libc

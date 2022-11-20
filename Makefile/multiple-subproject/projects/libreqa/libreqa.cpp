@@ -1,8 +1,10 @@
+#include "../liba/liba.hpp"
+
 #include <iostream>
 namespace libreqa
 {
-    int init = []() {
-        std::cout << "libreqa init" << std::endl;
-        return 0;
-    }();
+    void greet() {
+        liba::greet();
+        std::cout << "libreqa" << std::endl;
+    }
 } // namespace libreqa
