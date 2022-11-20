@@ -1,3 +1,4 @@
+tmp
 build/
 .vscode/**
 !.vscode/tasks.json
