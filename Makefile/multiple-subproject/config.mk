@@ -2,7 +2,7 @@
 
 # Rewrite here for your project
 LIBRARY_SOURCE_DIRS ?= projects/liba projects/libb projects/libreqa
-EXECUTABLE_SOURCE_DIRS ?= projects/a projects/abc projects/x projects/req-libreqa
+EXECUTABLE_SOURCE_DIRS ?= projects/a projects/x projects/req-libreqa
 CUSTOM_MAKE_SOURCE_DIRS ?= projects/libc projects/abc
 INCLUDE_PATHS ?= # projects/include
 
