@@ -1,19 +1,19 @@
 # license: CC0
 
-test:
-	./build/test/src/test1
-	./build/test/src/test2
-	./build/test/src/test3
-	./build/test/src/test4
+test: all
+	build/projects/a/a
+	build/projects/x/x
+	build/projects/req-libreqa/req-libreqa
+	build/projects/abc/abc
 
 test-make:
 	$(MAKE) clean
 	$(MAKE) all
-	$(BUILD_DIR)/test/src/test1
-	cp -p $(BUILD_DIR)/test/src/test1 $(BUILD_DIR)/test/src/test1.old
+	build/projects/a/a
+	cp -p build/projects/a/a build/projects/a/a.old
 	$(MAKE) test
 	sleep 1
-	touch test/src/libtesta/include/libtesta.h
+	touch projects/liba/liba.hpp
 	$(MAKE) all
-	$(BUILD_DIR)/test/src/test1
-	test -n "$$(find $(BUILD_DIR) -path $(BUILD_DIR)/test/src/test1 -newer $(BUILD_DIR)/test/src/test1.old)"
+	build/projects/a/a
+	test -n "$$(find $(BUILD_DIR) -path build/projects/a/a -newer build/projects/a/a.old)"

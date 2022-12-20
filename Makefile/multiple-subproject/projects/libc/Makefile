@@ -9,3 +9,5 @@ $(BUILD_DIR)/$(SOURCE_DIR)/libc.so:
 	$(CXX) $(LDFLAGS) $(OBJECT_FILES) -shared -o $@
 
 include $(DEFAULT_MAKERULE_FILE)
+
+-include test.mk
