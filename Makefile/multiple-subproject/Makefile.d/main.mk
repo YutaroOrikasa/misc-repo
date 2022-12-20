@@ -25,16 +25,16 @@ all: $(LIBRARY_TARGETS) $(EXECUTABLE_TARGETS) $(CUSTOM_MAKE_TARGETS) ;
 
 
 $(BUILD_DIR)/%.a: FORCE
-	$(MAKE) -f Makefile.d/submake.mk TARGET=$(@) BUILD_DIR=$(BUILD_DIR) all
+	$(MAKE) -f Makefile.d/submake.mk TARGET=$(@) BUILD_DIR=$(BUILD_DIR) $(@)
 
 
 $(BUILD_DIR)/%: $(ALL_LIBRARY_FILES) FORCE
 	set -x; \
 	custom_makefile="$(@D:$(BUILD_DIR)/%=%)/Makefile"; \
 	if [ -e "$$custom_makefile" ]; then \
-		$(MAKE) -f "$$custom_makefile" DEFAULT_MAKERULE_FILE=Makefile.d/submake_for_custom.mk SOURCE_DIR=$(@D:$(BUILD_DIR)/%=%) TARGET=$(@) BUILD_DIR=$(BUILD_DIR); \
+		$(MAKE) -f Makefile.d/submake.mk CUSTOM_MAKE_FILE="$$custom_makefile" SOURCE_DIR=$(@D:$(BUILD_DIR)/%=%) TARGET=$(@) BUILD_DIR=$(BUILD_DIR) all; \
 	else \
-		$(MAKE) -f Makefile.d/submake.mk LIBRARY_FILES="$(ALL_LIBRARY_TARGETS)" TARGET=$(@) BUILD_DIR=$(BUILD_DIR) all; \
+		$(MAKE) -f Makefile.d/submake.mk LIBRARY_FILES="$(ALL_LIBRARY_TARGETS)" TARGET=$(@) BUILD_DIR=$(BUILD_DIR) $(@); \
 	fi
 
 
