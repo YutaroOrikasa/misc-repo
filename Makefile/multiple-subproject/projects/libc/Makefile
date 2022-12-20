@@ -8,6 +8,4 @@ all: $(BUILD_DIR)/$(SOURCE_DIR)/libc.so
 $(BUILD_DIR)/$(SOURCE_DIR)/libc.so:
 	$(CXX) $(LDFLAGS) $(OBJECT_FILES) -shared -o $@
 
-
-
--include test.mk
+include Makefile.d/common.mk

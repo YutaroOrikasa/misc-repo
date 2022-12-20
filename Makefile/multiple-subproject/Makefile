@@ -10,4 +10,4 @@ include Makefile.d/main.mk
 list-targets:
 	@printf '%s\n' $(LIBRARY_TARGETS) $(EXECUTABLE_TARGETS) $(CUSTOM_MAKE_TARGETS)
 
-include test.mk
+-include test.mk
