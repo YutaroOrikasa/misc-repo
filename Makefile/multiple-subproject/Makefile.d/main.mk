@@ -32,7 +32,7 @@ $(BUILD_DIR)/%: $(ALL_LIBRARY_FILES) FORCE
 	set -x; \
 	custom_makefile="$(@D:$(BUILD_DIR)/%=%)/Makefile"; \
 	if [ -e "$$custom_makefile" ]; then \
-		$(MAKE) -f Makefile.d/submake.mk CUSTOM_MAKE_FILE="$$custom_makefile" SOURCE_DIR=$(@D:$(BUILD_DIR)/%=%) TARGET=$(@) BUILD_DIR=$(BUILD_DIR) all; \
+		$(MAKE) -f "$$custom_makefile" SOURCE_DIR=$(@D:$(BUILD_DIR)/%=%) BUILD_DIR=$(BUILD_DIR) all; \
 	else \
 		$(MAKE) -f Makefile.d/submake.mk LIBRARY_FILES="$(ALL_LIBRARY_TARGETS)" TARGET=$(@) BUILD_DIR=$(BUILD_DIR) $(@); \
 	fi
