@@ -28,12 +28,15 @@ $(BUILD_DIR)/%.a: FORCE
 	$(MAKE) -f Makefile.d/submake.mk TARGET=$(@) BUILD_DIR=$(BUILD_DIR) all
 
 
-
-$(BUILD_DIR)/%/___: FORCE $(BUILD_DIR)/%/._____.DEPENDENCY
-	$(MAKE) -f $(@:$(BUILD_DIR)/%/.PHONY=%/Makefile) DEFAULT_MAKERULE_FILE=Makefile.d/submake_for_custom.mk SOURCE_DIR=$(@:$(BUILD_DIR)/%/.PHONY=%) TARGET=$(@) BUILD_DIR=$(BUILD_DIR)
-
 $(BUILD_DIR)/%: $(ALL_LIBRARY_FILES) FORCE
-	$(MAKE) -f Makefile.d/submake.mk LIBRARY_FILES="$(ALL_LIBRARY_TARGETS)" TARGET=$(@) BUILD_DIR=$(BUILD_DIR) all
+	set -x; \
+	custom_makefile="$(@D:$(BUILD_DIR)/%=%)/Makefile"; \
+	if [ -e "$$custom_makefile" ]; then \
+		$(MAKE) -f "$$custom_makefile" DEFAULT_MAKERULE_FILE=Makefile.d/submake_for_custom.mk SOURCE_DIR=$(@D:$(BUILD_DIR)/%=%) TARGET=$(@) BUILD_DIR=$(BUILD_DIR); \
+	else \
+		$(MAKE) -f Makefile.d/submake.mk LIBRARY_FILES="$(ALL_LIBRARY_TARGETS)" TARGET=$(@) BUILD_DIR=$(BUILD_DIR) all; \
+	fi
+
 
 # We must always do submake because main makefile can't detect depending file updated,
 # so we put FORCE dummy target.
