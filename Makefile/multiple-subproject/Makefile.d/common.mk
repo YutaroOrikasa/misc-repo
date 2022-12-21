@@ -1,5 +1,7 @@
 # license: CC0
 
+# Either LIBRARY_NAME or EXECUTABLE_FILE must be given.
+
 # In shell function, escaping is needed as same as shell script.
 SOURCE_FILES := $(shell set -x; find "$(SOURCE_DIR)" -name \*.c -or -name \*.cpp)
 
