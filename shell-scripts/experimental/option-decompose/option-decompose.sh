@@ -57,18 +57,13 @@ short_opts() {
 }
 
 
-first=1
 for arg in "$@";do
-    if [ $first = 1 ];then
-        first=0
-    else
-        printf ' '
-    fi
     case "$arg" in
         --*) long_opt "$arg";;
         -*) short_opts "$arg";;
         *) printf '%s' "$arg" | append_eof_newline | escape | remove_eof_newline | single_quote;;
     esac
+    printf ' '
 done
 echo
 
