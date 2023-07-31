@@ -38,16 +38,19 @@ arg_opts_short=
 
 
 long_opt() {
-    if printf '%s' "$1" | grep '=' > /dev/null;then
-        printf '%s ' "${1%%=*}"
-        printf '%s' "${1#*=}" \
-            | append_eof_newline \
-            | escape \
-            | remove_eof_newline \
-            | single_quote
-    else
-        printf '%s' "$1"
-    fi
+    case "$1" in
+        --*=*)
+            printf '%s ' "${1%%=*}"
+            printf '%s' "${1#*=}" \
+                | append_eof_newline \
+                | escape \
+                | remove_eof_newline \
+                | single_quote
+            ;;
+        *)
+            printf '%s' "$1"
+            ;;
+    esac
 
 }
 
