@@ -38,19 +38,26 @@ arg_opts_short=
 
 
 long_opt() {
-    case "$1" in
-        --*=*)
-            printf '%s ' "${1%%=*}"
-            printf '%s' "${1#*=}" \
-                | append_eof_newline \
-                | escape \
-                | remove_eof_newline \
-                | single_quote
-            ;;
-        *)
-            printf '%s' "$1"
-            ;;
-    esac
+    (
+        case "$1" in
+            --*=*)
+                opt="${1%%=*}"
+                if ! printf "%s\n" "$arg_opts_long" | grep -- "$opt" >/dev/null; then
+                    printf "error: '%s' takes no arguments.\n" "$opt" >&2
+                    exit 1
+                fi
+                printf '%s ' "$opt"
+                printf '%s' "${1#*=}" \
+                    | append_eof_newline \
+                    | escape \
+                    | remove_eof_newline \
+                    | single_quote
+                ;;
+            *)
+                printf '%s' "$1"
+                ;;
+        esac
+    ) || exit
 
 }
 
