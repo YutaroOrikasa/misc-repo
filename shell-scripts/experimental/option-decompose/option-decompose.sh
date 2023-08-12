@@ -33,6 +33,13 @@ single_quote() {
     printf "'"
 }
 
+quote_and_escape() {
+    append_eof_newline \
+        | escape \
+        | remove_eof_newline \
+        | single_quote
+}
+
 arg_opts_long=
 arg_opts_short=
 
@@ -48,10 +55,7 @@ long_opt() {
                 fi
                 printf '%s ' "$opt"
                 printf '%s' "${1#*=}" \
-                    | append_eof_newline \
-                    | escape \
-                    | remove_eof_newline \
-                    | single_quote
+                    | quote_and_escape
                 ;;
             *)
                 printf '%s' "$1"
@@ -74,11 +78,16 @@ short_opts() {
             opt="-$opt_char"
 
             if printf "%s\n" "$arg_opts_short" | grep -- "$opt" >/dev/null; then
-                printf '%s %s ' "$opt" "$tail"
+                printf '%s ' "$opt"
+
+                if [ -n "$tail" ]; then
+                    printf '%s' "$tail" | quote_and_escape
+                fi
+
                 return
             fi
 
-            printf '%s ' "$opt"
+            printf '%s' "$opt"
 
         done
 
@@ -102,7 +111,7 @@ for arg in "$@";do
         case "$arg" in
             --*) long_opt "$arg";;
             -*) short_opts "$arg";;
-            *) printf '%s' "$arg" | append_eof_newline | escape | remove_eof_newline | single_quote;;
+            *) printf '%s' "$arg" | quote_and_escape;;
         esac
         printf ' '
     fi
